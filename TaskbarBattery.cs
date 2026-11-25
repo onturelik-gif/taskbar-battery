@@ -361,7 +361,7 @@ namespace TaskbarBattery
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
-            Size = new Size(76, 48);
+            Size = new Size(54, 48);
 
             string appDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TaskbarBattery");
             Directory.CreateDirectory(appDir);
@@ -508,7 +508,7 @@ namespace TaskbarBattery
             }
             if (!Visible) Show();
 
-            int targetW = 76;
+            int targetW = 54;
             int targetH = 48;
             int targetX;
             int targetY;
@@ -532,11 +532,12 @@ namespace TaskbarBattery
                 RECT tnRect;
                 if (tn != IntPtr.Zero && GetWindowRect(tn, out tnRect) && (tnRect.Right - tnRect.Left) > 20)
                 {
-                    targetX = tnRect.Left - targetW + 26 + _offsetX;
+                    // End strictly at tnRect.Left so we never overlap or block clicks on the ^ chevron
+                    targetX = tnRect.Left - targetW + _offsetX;
                 }
                 else
                 {
-                    targetX = tbRect.Right - 216 - targetW + _offsetX;
+                    targetX = tbRect.Right - 220 - targetW + _offsetX;
                 }
             }
             else
@@ -686,34 +687,34 @@ namespace TaskbarBattery
                     // Row 1: Mouse
                     Color mCol = GetStatusColor(_mouse);
                     float y1 = (rowH - iconSize) / 2f + 2f;
-                    DrawMouseIcon(g, 4f, y1, iconSize, mCol);
+                    DrawMouseIcon(g, 2f, y1, iconSize, mCol);
                     string mStr = _mouse.Connected ? (_mouse.Percent + "%") : "--%";
                     using (var mb = new SolidBrush(mCol))
                     {
-                        g.DrawString(mStr, font, mb, 20f, y1 - 2.2f);
+                        g.DrawString(mStr, font, mb, 17f, y1 - 2.2f);
                     }
                     if (_mouse.Connected && _mouse.Charging)
                     {
                         float textW = g.MeasureString(mStr, font).Width;
-                        DrawLightningBolt(g, 19f + textW, y1 + 1f, 10f, mCol);
+                        DrawLightningBolt(g, 15f + textW, y1 + 1f, 10f, mCol);
                     }
 
                     // Row 2: Headset
                     Color hCol = GetStatusColor(_headset);
                     float y2 = rowH + (rowH - iconSize) / 2f - 2f;
-                    DrawHeadphoneIcon(g, 4f, y2, iconSize, hCol);
+                    DrawHeadphoneIcon(g, 2f, y2, iconSize, hCol);
                     string hStr;
                     if (!_headset.Connected) hStr = "--%";
                     else if (_headset.Charging && _headset.Percent < 0) hStr = "Şarj";
                     else hStr = _headset.Percent + "%";
                     using (var hb = new SolidBrush(hCol))
                     {
-                        g.DrawString(hStr, font, hb, 20f, y2 - 2.2f);
+                        g.DrawString(hStr, font, hb, 17f, y2 - 2.2f);
                     }
                     if (_headset.Connected && _headset.Charging)
                     {
                         float textW = g.MeasureString(hStr, font).Width;
-                        DrawLightningBolt(g, 19f + textW, y2 + 1f, 10f, hCol);
+                        DrawLightningBolt(g, 15f + textW, y2 + 1f, 10f, hCol);
                     }
                 }
 
